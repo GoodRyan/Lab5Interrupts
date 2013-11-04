@@ -105,6 +105,7 @@ char testAndRespondToButtonPush(char buttonToTest)
 
         P1IES ^= buttonToTest;
         P1IFG &= ~buttonToTest;
-        return pressed;
+
     }
+    return pressed;
 }

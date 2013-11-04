@@ -28,18 +28,31 @@ int main(void) {
    	printPlayer(player);
     while(1)
     {
-    	if(BUTTON_PRESSED == 1){
-    	player = movePlayer(player, RIGHT);
+    	if (BUTTON_PRESSED != 0)
+    	{
+    		clearPlayer(player);
+
+			if(BUTTON_PRESSED == 1){
+				player = movePlayer(player, RIGHT);
+			}
+			else if(BUTTON_PRESSED == 2){
+				player = movePlayer(player, LEFT);
+			}
+			else if(BUTTON_PRESSED == 3){
+				player = movePlayer(player, UP);
+			}
+			else if(BUTTON_PRESSED == 4){
+				player = movePlayer(player, DOWN);
+			}
+
+    		printPlayer(player);
+
+    		TAR = 0;
+    		TIMER = 0;
+
+        	BUTTON_PRESSED = 0;
     	}
-    	else if(BUTTON_PRESSED == 2){
-    	player = movePlayer(player, LEFT);
-    	}
-    	else if(BUTTON_PRESSED == 3){
-    	player = movePlayer(player, UP);
-    	}
-    	else if(BUTTON_PRESSED == 4){
-    	player = movePlayer(player, DOWN);
-    	}
+
     	if(LOSE == 1){
     		LCDclear();
     		print("GAME");
@@ -51,14 +64,18 @@ int main(void) {
     		debounce();
     	}
     	if(didPlayerWin(player)){
+    		//debounce();
     		LCDclear();
     		print("YOU");
     		secondLine();
     		print("WON");
     		firstLine();
     		gameOver = 1;
-    		waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
-    		debounce();
+    		//waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
+    		waitForP1ButtonRelease(BIT1);
+    		waitForP1ButtonRelease(BIT2);
+    		waitForP1ButtonRelease(BIT3);
+    		waitForP1ButtonRelease(BIT4);
     	}
     	if(gameOver){
     		char buttonsToPoll[4] = {BIT1, BIT2, BIT3, BIT4};
@@ -93,15 +110,19 @@ __interrupt void Port_1_ISR(void)
 {
 	if(testAndRespondToButtonPush(BIT1)){
 		BUTTON_PRESSED = 1;
+		P1IFG &= ~BIT1;
 	}
 	else if(testAndRespondToButtonPush(BIT2)){
 		BUTTON_PRESSED = 2;
+		P1IFG &= ~BIT2;
 	}
 	else if(testAndRespondToButtonPush(BIT3)){
 		BUTTON_PRESSED = 3;
+		P1IFG &= ~BIT3;
 	}
 	else if(testAndRespondToButtonPush(BIT4)){
 		BUTTON_PRESSED = 4;
+		P1IFG &= ~BIT4;
 	}
 }
 
@@ -119,5 +140,6 @@ void init_timer()
 void init_buttons()
 {
 	configureP1PinAsButton(BIT1|BIT2|BIT3|BIT4);
+
 }
 

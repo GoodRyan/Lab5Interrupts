@@ -8,6 +8,9 @@ void configureP1PinAsButton(char pin)
     P1DIR &= ~pin;
     P1OUT |= pin;
     P1REN |= pin;
+    P1IES |= pin;
+    P1IFG &= ~pin;
+    P1IE |= pin;
 }
 
 char isP1ButtonReleased(char pin)
@@ -43,5 +46,5 @@ char pollP1Buttons(char buttonsToPoll[], char numberOfButtonsToPoll)
 
 void debounce()
 {
-    __delay_cycles(5000);
+    __delay_cycles(7000);
 }

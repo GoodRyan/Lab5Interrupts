@@ -8,6 +8,7 @@ void init_buttons();
 
 int TIMER = 0; //tracks if game is in progress or lost
 int LOSE = 0;
+int GAMEOVER = 0;
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
@@ -34,14 +35,8 @@ int main(void) {
     		secondLine();
     		print("OVER");
     		firstLine();
-    		while(!(isP1ButtonPressed(BIT1|BIT2|BIT3|BIT4))){
-    			//wait for button press to start game again
-    		}
+    		GAMEOVER = 1;
     		waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
-    		TAR = 0; //clear the clock
-    		LOSE = 0;
-    		TIMER = 0;
-    		LCDclear();
     		debounce();
     	}
     	if(didPlayerWin(player)){
@@ -50,13 +45,22 @@ int main(void) {
     		secondLine();
     		print("WON");
     		firstLine();
-    		while(!(isP1ButtonPressed(BIT1|BIT2|BIT3|BIT4))){
-    			//wait for button press to start game again
-    		}
+    		GAMEOVER = 1;
     		waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
-    		TACTL |= TACLR; //clear timer
-    		LCDclear();
     		debounce();
+    	}
+    	if(GAMEOVER){
+    		char buttonsToPoll[4] = {BIT1, BIT2, BIT3, BIT4};
+    		while(!pollP1Buttons(buttonsToPoll, 4)){
+    			//poll until something is pressed
+    		}
+    		TAR = 0;
+    		LOSE = 0;
+    		TIMER = 0;
+    		GAMEOVER = 0;
+    		LCDclear();
+    		player = initPlayer();
+    		printPlayer(player);
     	}
     }
 

@@ -218,7 +218,7 @@ void scrollString(char * string1, char * string2){
 	}
 	return buttonPressed;
 }
-
+**/
 //moves cursor to the second line
 void secondLine(){
 	writeCommandByte(0xa8);
@@ -228,7 +228,7 @@ void secondLine(){
 void firstLine(){
 	writeCommandByte(0x80);
 }
-**/
+
 
 /**void selectMessage(char buttonPressed){
 	if(buttonPressed == 1){

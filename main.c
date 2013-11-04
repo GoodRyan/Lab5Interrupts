@@ -6,9 +6,9 @@
 void init_timer();
 void init_buttons();
 
-int TIMER = 0; //tracks if game is in progress or lost
-int LOSE = 0;
-int GAMEOVER = 0;
+char TIMER = 0; //tracks if game is in progress or lost
+char LOSE = 0;
+char BUTTON_PRESSED = 0;
 
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
@@ -20,6 +20,7 @@ int main(void) {
     LCDclear();
 
     unsigned char player = initPlayer();
+    int gameOver = 0;
 
     init_timer();
     init_buttons();
@@ -27,15 +28,25 @@ int main(void) {
    	printPlayer(player);
     while(1)
     {
-
-    	player = movementCheck(player);
+    	if(BUTTON_PRESSED == 1){
+    	player = movePlayer(player, RIGHT);
+    	}
+    	else if(BUTTON_PRESSED == 2){
+    	player = movePlayer(player, LEFT);
+    	}
+    	else if(BUTTON_PRESSED == 3){
+    	player = movePlayer(player, UP);
+    	}
+    	else if(BUTTON_PRESSED == 4){
+    	player = movePlayer(player, DOWN);
+    	}
     	if(LOSE == 1){
     		LCDclear();
     		print("GAME");
     		secondLine();
     		print("OVER");
     		firstLine();
-    		GAMEOVER = 1;
+    		gameOver = 1;
     		waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
     		debounce();
     	}
@@ -45,11 +56,11 @@ int main(void) {
     		secondLine();
     		print("WON");
     		firstLine();
-    		GAMEOVER = 1;
+    		gameOver = 1;
     		waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
     		debounce();
     	}
-    	if(GAMEOVER){
+    	if(gameOver){
     		char buttonsToPoll[4] = {BIT1, BIT2, BIT3, BIT4};
     		while(!pollP1Buttons(buttonsToPoll, 4)){
     			//poll until something is pressed
@@ -57,7 +68,7 @@ int main(void) {
     		TAR = 0;
     		LOSE = 0;
     		TIMER = 0;
-    		GAMEOVER = 0;
+    		gameOver = 0;
     		LCDclear();
     		player = initPlayer();
     		printPlayer(player);
@@ -75,6 +86,23 @@ __interrupt void TIMER0_A1_ISR()
     if (TIMER == 4){
     	LOSE = 1;
     }
+}
+
+#pragma vector=PORT1_VECTOR
+__interrupt void Port_1_ISR(void)
+{
+	if(testAndRespondToButtonPush(BIT1)){
+		BUTTON_PRESSED = 1;
+	}
+	else if(testAndRespondToButtonPush(BIT2)){
+		BUTTON_PRESSED = 2;
+	}
+	else if(testAndRespondToButtonPush(BIT3)){
+		BUTTON_PRESSED = 3;
+	}
+	else if(testAndRespondToButtonPush(BIT4)){
+		BUTTON_PRESSED = 4;
+	}
 }
 
 void init_timer()

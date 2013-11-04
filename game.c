@@ -48,7 +48,7 @@ unsigned char movePlayer(unsigned char player, unsigned char direction)
         return player;
 }
 
-unsigned char movementCheck(unsigned char player){
+/**unsigned char movementCheck(unsigned char player, char button){
 	if(isP1ButtonPressed(BIT1))
 	{
 	    		clearPlayer(player);
@@ -84,8 +84,27 @@ unsigned char movementCheck(unsigned char player){
 	    	}
 	return player;
 }
-
+**/
 char didPlayerWin(unsigned char player)
 {
         return player == 0xC7;
+}
+
+char testAndRespondToButtonPush(char buttonToTest)
+{
+	char pressed = 0;
+    if (buttonToTest & P1IFG)
+    {
+        if (buttonToTest & P1IES)
+        {
+        	pressed = 1;
+        } else
+        {
+            debounce();
+        }
+
+        P1IES ^= buttonToTest;
+        P1IFG &= ~buttonToTest;
+        return pressed;
+    }
 }

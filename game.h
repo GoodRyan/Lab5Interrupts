@@ -40,7 +40,9 @@ unsigned char movePlayer(unsigned char player, unsigned char direction);
 //
 char didPlayerWin(unsigned char player);
 
-unsigned char movementCheck(unsigned char player);
+unsigned char movementCheck(unsigned char player, char button);
+
+char testAndRespondToButtonPush(char buttonToTest);
 
 /*
 * Functions which may prove useful in achieving A-Functionality.

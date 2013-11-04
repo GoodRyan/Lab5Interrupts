@@ -19,29 +19,28 @@ int main(void) {
     LCDclear();
 
     unsigned char player = initPlayer();
-    char buttonsToPoll[4] = {BIT1, BIT2, BIT3, BIT4};
-    char playerMovement = 0;
 
     init_timer();
     init_buttons();
     __enable_interrupt();
-
+   	printPlayer(player);
     while(1)
     {
-    	printPlayer(player);
 
-    	movementCheck(player);
-
+    	player = movementCheck(player);
     	if(LOSE == 1){
     		LCDclear();
     		print("GAME");
     		secondLine();
     		print("OVER");
     		firstLine();
-    		while(!isP1ButtonPressed(BIT1|BIT2|BIT3|BIT4)){
+    		while(!(isP1ButtonPressed(BIT1|BIT2|BIT3|BIT4))){
     			//wait for button press to start game again
     		}
     		waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
+    		TAR = 0; //clear the clock
+    		LOSE = 0;
+    		TIMER = 0;
     		LCDclear();
     		debounce();
     	}
@@ -51,10 +50,11 @@ int main(void) {
     		secondLine();
     		print("WON");
     		firstLine();
-    		while(!isP1ButtonPressed(BIT1|BIT2|BIT3|BIT4)){
+    		while(!(isP1ButtonPressed(BIT1|BIT2|BIT3|BIT4))){
     			//wait for button press to start game again
     		}
     		waitForP1ButtonRelease(BIT1|BIT2|BIT3|BIT4);
+    		TACTL |= TACLR; //clear timer
     		LCDclear();
     		debounce();
     	}

@@ -43,5 +43,5 @@ char pollP1Buttons(char buttonsToPoll[], char numberOfButtonsToPoll)
 
 void debounce()
 {
-    __delay_cycles(1000);
+    __delay_cycles(4000);
 }

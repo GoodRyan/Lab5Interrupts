@@ -24,7 +24,7 @@ unsigned char movePlayer(unsigned char player, unsigned char direction)
 {
         switch (direction) {
         case RIGHT:
-        	if(player != 0x87 && player != 0xC7){
+        	if((player != 0x87) && (player != 0xC7)){
         	player += 0x01;
         	}
         	break;
@@ -35,12 +35,12 @@ unsigned char movePlayer(unsigned char player, unsigned char direction)
         	break;
         case UP:
         	if(player > 0x87){
-        		player -= 0x40;
+        	player -= 0x40;
         	}
         	break;
         case DOWN:
         	if (player < 0xC0){
-        		player += 0x40;
+        	player += 0x40;
         	}
         	break;
         }
@@ -48,37 +48,41 @@ unsigned char movePlayer(unsigned char player, unsigned char direction)
         return player;
 }
 
-void movementCheck(unsigned char player){
-	if(isP1ButtonPressed(BIT1)){
+unsigned char movementCheck(unsigned char player){
+	if(isP1ButtonPressed(BIT1))
+	{
 	    		clearPlayer(player);
-	    		movePlayer(player, RIGHT);
+	    		player = movePlayer(player, RIGHT);
 	    		printPlayer(player);
+	    		TAR = 0;
 	    		waitForP1ButtonRelease(BIT1);
 	    		debounce();
 	    	}
 	    	else if(isP1ButtonPressed(BIT2)){
 	    		clearPlayer(player);
-	    		movePlayer(player, LEFT);
+	    		player = movePlayer(player, LEFT);
 	    		printPlayer(player);
-	    		TACTL |= TACLR;
+	    		TAR = 0;
 	    		waitForP1ButtonRelease(BIT2);
 	    		debounce();
 	    	}
 	    	else if(isP1ButtonPressed(BIT3)){
 	    		clearPlayer(player);
-	    		movePlayer(player, UP);
+	    		player = movePlayer(player, UP);
 	    		printPlayer(player);
-	    		TACTL |= TACLR;
+	    		TAR = 0;
 	    		waitForP1ButtonRelease(BIT3);
 	    		debounce();
 	    	}
 	    	else if(isP1ButtonPressed(BIT4)){
 	    		clearPlayer(player);
-	    		movePlayer(player, DOWN);
-	    		TACTL |= TACLR;
+	    		player = movePlayer(player, DOWN);
+	    		printPlayer(player);
+	    		TAR = 0;
 	    		waitForP1ButtonRelease(BIT4);
 	    		debounce();
 	    	}
+	return player;
 }
 
 char didPlayerWin(unsigned char player)
